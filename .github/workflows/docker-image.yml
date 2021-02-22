@@ -16,13 +16,24 @@ jobs:
       -
         name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       -
-        name: Extract Commit Details
-        id: commit_details
+        name: Extract Commit Details For Merges
+        id: commit_details_merge
+        if: github.event_name != 'pull_request'
         shell: bash
         run: |
-          echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
-          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      -
+        name: Extract Commit Details For Pull Requests
+        id: commit_details_pull_request
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+          echo "SHA_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -42,5 +53,5 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ github.repository }}:${{ steps.commit_details.outputs.branch }}
-            ${{ github.repository }}:${{ steps.commit_details.outputs.branch }}-${{ steps.commit_details.outputs.sha_short }}
+            ${{ github.repository }}:${{ env.BRANCH_NAME }}
+            ${{ github.repository }}:${{ env.BRANCH_NAME }}-${{ env.SHA_SHORT }}
