@@ -18,9 +18,9 @@ jobs:
         uses: actions/checkout@v2
       -
         name: Extract branch name
-        shell: bash
-        run: run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+        shell: bash
+        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
