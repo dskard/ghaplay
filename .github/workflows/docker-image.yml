@@ -42,5 +42,5 @@ jobs:
         with:
           push: true
           tags: |
-            dskard/ghaplay:${{ steps.commit_details.outputs.branch }}
-            dskard/ghaplay:${{ steps.commit_details.outputs.branch }}-${{ steps.commit_details.outputs.sha_short }}
+            ${{ github.repository }}:${{ steps.commit_details.outputs.branch }}
+            ${{ github.repository }}:${{ steps.commit_details.outputs.branch }}-${{ steps.commit_details.outputs.sha_short }}
