@@ -17,10 +17,12 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
-        name: Extract branch name
-        id: extract_branch
+        name: Extract Commit Details
+        id: commit_details
         shell: bash
-        run: echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+        run: |
+          echo "::set-output name=branch::${GITHUB_REF#refs/heads/}"
+          echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -40,4 +42,5 @@ jobs:
         with:
           push: true
           tags: |
-            dskard/ghaplay:${{ steps.extract_branch.outputs.branch }}
+            dskard/ghaplay:${{ steps.commit_details.outputs.branch }}
+            dskard/ghaplay:${{ steps.commit_details.outputs.branch }}-${{ steps.commit_details.outputs.sha_short }}
