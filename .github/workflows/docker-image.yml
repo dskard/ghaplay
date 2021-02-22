@@ -32,5 +32,4 @@ jobs:
         with:
           push: true
           tags: |
-            dskard/ghaplay:$(date +%s)
             dskard/ghaplay:latest
